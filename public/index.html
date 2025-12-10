@@ -1,0 +1,32 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adyen Apple Pay Example</title>
+
+  <link rel="stylesheet" href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.44.0/adyen.css" />
+  <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.44.0/adyen.js"></script>
+</head>
+<body>
+  <h1>Adyen + Apple Pay Test</h1>
+  <div id="applepay-container"></div>
+
+  <script>
+    fetch('/config')
+      .then(r => r.json())
+      .then(cfg => {
+        return AdyenCheckout({
+          environment: "test",
+          clientKey: cfg.clientKey
+        });
+      })
+      .then(checkout => {
+        checkout.create("applepay", {
+          amount: { value: 1000, currency: "USD" }
+        }).mount("#applepay-container");
+      });
+  </script>
+</body>
+</html>

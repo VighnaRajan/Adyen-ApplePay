@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: adyen-applepay-service
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: ADYEN_API_KEY
+        sync: false
+      - key: ADYEN_CLIENT_KEY
+        sync: false
+      - key: ADYEN_MERCHANT_ACCOUNT
+        sync: false
+      - key: ADYEN_HMAC_KEY
+        sync: false
+      - key: ADYEN_ENVIRONMENT
+        value: "TEST"
+      - key: RETURN_URL
+        value: "https://vighna.onebill.net"
+      - key: PORT
+        value: "10000"   # Render binds your web app to $PORT
