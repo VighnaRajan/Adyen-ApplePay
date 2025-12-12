@@ -32,6 +32,7 @@ app.post('/api/adyen/applepay/sessions', async (req, res) => {
     domainName: domainName || new URL(origin || 'https://example.com').hostname,
     displayName: displayName || 'Demo Store',
     amount: amount || { currency: 'EUR', value: 1000 },
+    merchantIdentifier: "merchant.com.onebill.payment",
     channel: 'Web'
   };
 
