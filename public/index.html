@@ -4,15 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <title>Adyen Apple Pay Web Drop-in</title>
-
   <script
-  src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
-  defer
-  crossorigin="anonymous">
-</script>
+    src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.66.0/adyen.js"
+    defer
+    crossorigin="anonymous">
+  </script>
 <link
   rel="stylesheet"
-  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.css"
+  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.66.0/adyen.css"
 />
 </head>
 
@@ -21,31 +20,13 @@
   <div id="dropin-container"></div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+    async function initCheckout() {
+      const paymentMethodsResponse = await fetch("/api/paymentMethods").then(r => r.json());
 
-      const AdyenCheckoutCtor =
-        window.AdyenCheckout?.default || window.AdyenCheckout;
-
-      if (!AdyenCheckoutCtor) {
-        throw new Error("Adyen SDK loaded but constructor not found");
-      }
-
-      if (!window.ApplePaySession || !ApplePaySession.canMakePayments()) {
-        document.body.insertAdjacentHTML(
-          "beforeend",
-          "<p>Apple Pay not supported on this device/browser.</p>"
-        );
-        return;
-      }
-
-      const paymentMethodsResponse =
-        await fetch("/api/paymentMethods").then(r => r.json());
-
-      const checkout = await AdyenCheckoutCtor({
+      const checkout = new AdyenCheckout({
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
-
         onSubmit: async (state, dropin) => {
           const response = await fetch("/api/payments", {
             method: "POST",
@@ -56,10 +37,9 @@
           if (response.action) {
             dropin.handleAction(response.action);
           } else {
-            alert(response.resultCode);
+            alert("Result: " + response.resultCode);
           }
         },
-
         onAdditionalDetails: async (state, dropin) => {
           const response = await fetch("/api/payments/details", {
             method: "POST",
@@ -67,12 +47,15 @@
             body: JSON.stringify(state.data)
           }).then(r => r.json());
 
-          alert(response.resultCode);
+          alert("Result: " + response.resultCode);
         }
       });
 
-      checkout.create("dropin").mount("#dropin-container");
-    });
+      const dropin = checkout.createDropin();
+      dropin.mount("#dropin-container");
+    }
+
+    initCheckout();
   </script>
 
 </body>
