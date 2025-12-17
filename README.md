@@ -1,23 +1,18 @@
 
-# Adyen + Apple Pay Web Drop-in (SDK v6)
+# Adyen Apple Pay Drop‑in (Adyen Certificate) – Render Ready
 
-## Features
-- Adyen Web SDK v6
-- Apple Pay rendering validation
-- Recurring token (Card-on-File) support
-- Render.com ready
+This project uses **Adyen's Apple Pay certificate** (NOT your own Apple cert).
 
-## Environment Variables
+## Environment Variables (Render)
 - ADYEN_API_KEY
 - ADYEN_MERCHANT_ACCOUNT
-- ADYEN_ENVIRONMENT=test|LIVE
-- PORT=3000
+- BASE_URL (https://your-render-app.onrender.com)
 
-## Notes
-- Replace clientKey in index.html
-- Apple Pay must be enabled & domain verified in Adyen
-- HTTPS is mandatory (Render provides it)
+## Deploy on Render
+- Build Command: mvn clean package
+- Start Command: java -jar target/adyen-applepay-0.0.1-SNAPSHOT.jar
 
-## Run
-npm install
-npm start
+## Apple Pay Notes
+- Apple Pay appears automatically on Safari when eligible.
+- Domain must be registered in Adyen Customer Area.
+- Uses Adyen-hosted merchant validation internally.
