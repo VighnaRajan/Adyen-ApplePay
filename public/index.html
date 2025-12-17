@@ -23,10 +23,11 @@
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
 
-      if (!window.AdyenCheckout) {
-        console.error("Adyen SDK not available", window);
-        alert("Adyen SDK failed to load – check CSP / network");
-        return;
+      const AdyenCheckoutCtor =
+        window.AdyenCheckout?.default || window.AdyenCheckout;
+
+      if (!AdyenCheckoutCtor) {
+        throw new Error("Adyen SDK loaded but constructor not found");
       }
 
       if (!window.ApplePaySession || !ApplePaySession.canMakePayments()) {
@@ -40,7 +41,7 @@
       const paymentMethodsResponse =
         await fetch("/api/paymentMethods").then(r => r.json());
 
-      const checkout = await AdyenCheckout({
+      const checkout = await AdyenCheckoutCtor({
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
