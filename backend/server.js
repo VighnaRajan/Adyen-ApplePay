@@ -1,43 +1,34 @@
-
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { Client, CheckoutAPI } from '@adyen/api-library';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require('express');
+const path = require('path');
+const { Client, CheckoutAPI } = require('@adyen/api-library');
 
 const app = express();
 app.use(express.json());
 
-const client = new Client({
-  apiKey: process.env.ADYEN_API_KEY,
-  environment: 'TEST'
-});
-
+// Adyen client
+const client = new Client({ apiKey: process.env.ADYEN_API_KEY, environment: 'TEST' });
 const checkout = new CheckoutAPI(client);
 
+// Sessions endpoint
 app.post('/api/sessions', async (req, res) => {
   try {
     const response = await checkout.sessions({
       merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT,
       amount: { currency: 'USD', value: 1000 },
-      reference: 'render-applepay-node',
+      reference: 'render-applepay-demo',
       returnUrl: process.env.BASE_URL,
       countryCode: 'US'
     });
     res.json(response);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
+// Serve frontend
 app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
 
-app.get('*', (_, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
-
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Listening on ${port}`));
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
