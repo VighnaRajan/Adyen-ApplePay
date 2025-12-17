@@ -22,6 +22,10 @@ const ADYEN_CHECKOUT_URL =
     : "https://checkout-test.adyen.com/v71";
 
 app.get("/api/paymentMethods", async (req, res) => {
+  console.log("ADYEN_API_KEY",ADYEN_API_KEY);
+  console.log("ADYEN_MERCHANT_ACCOUNT",ADYEN_MERCHANT_ACCOUNT);
+  
+  
   const response = await fetch(`${ADYEN_CHECKOUT_URL}/paymentMethods`, {
     method: "POST",
     headers: {

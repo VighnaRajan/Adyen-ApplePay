@@ -18,6 +18,8 @@
     async function initCheckout() {
       const paymentMethodsResponse = await fetch("/api/paymentMethods").then(r => r.json());
 
+      console.log("paymentMethodsResponse", paymentMethodsResponse);
+
       const checkout = new AdyenCheckout({
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
