@@ -9,15 +9,10 @@ const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 
-const ADYEN_API_KEY = "AQExhmfxJoPMahdHw0m/n3Q5qf3VZ4VID5pGVFZZwGy8n3ROlODmr0IK7OpPHkNslr/xIBDBXVsNvuR83LVYjEgiTGAH-3EJO2ZjQfvY4N+q8jvOVcZZSzL6enWyMLIsoevlTNGo=-i1iYa2r_Y69~BCYJe@)";
+const ADYEN_API_KEY = "AQExhmfxJoPMahdHw0m/n3Q5qf3VZ4VID5pGVFZZwGy8n3ROlODmr0IK7OpPHkNslr/xIBDBXVsNvuR83LVYjEgiTGAH-a91qhQnJHvwHAxTmzRPWRXx2sQp5VOejTyHEXwhyeHw=-i1i7kpk;.$ejPV_h<W9";
 const ADYEN_MERCHANT_ACCOUNT = "OnebillSoftwareECOM";
-const ADYEN_ENVIRONMENT = "test";
 const PORT = "3000";
-
-const ADYEN_CHECKOUT_URL =
-  ADYEN_ENVIRONMENT === "LIVE"
-    ? "https://checkout-live.adyen.com/v71"
-    : "https://checkout-test.adyen.com/v71";
+const ADYEN_CHECKOUT_URL = "https://checkout-test.adyen.com/v71";
 
 app.get("/api/paymentMethods", async (req, res) => {
   const response = await fetch(`${ADYEN_CHECKOUT_URL}/paymentMethods`, {
