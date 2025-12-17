@@ -4,21 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>Adyen Apple Pay Web Drop-in</title>
-  <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"></script>
+  <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
+    crossorigin="anonymous">
+  </script>
   <link
     rel="stylesheet"
     href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.css"
   />
 </head>
+
 <body>
   <h2>Apple Pay via Adyen Web Drop-in (SDK v6)</h2>
   <div id="dropin-container"></div>
 
   <script>
-    async function initCheckout() {
+    window.addEventListener("load", async function () {
+      if (typeof AdyenCheckout === "undefined") {
+        alert("Adyen SDK failed to load");
+        return;
+      }
+
       if (!window.ApplePaySession || !ApplePaySession.canMakePayments()) {
-        document.body.insertAdjacentHTML("beforeend",
-          "<p>Apple Pay not supported on this device/browser.</p>");
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          "<p>Apple Pay not supported on this device/browser.</p>"
+        );
         return;
       }
 
@@ -29,6 +39,7 @@
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
+
         onSubmit: async (state, dropin) => {
           const response = await fetch("/api/payments", {
             method: "POST",
@@ -42,6 +53,7 @@
             alert("Result: " + response.resultCode);
           }
         },
+
         onAdditionalDetails: async (state, dropin) => {
           const response = await fetch("/api/payments/details", {
             method: "POST",
@@ -54,9 +66,7 @@
       });
 
       checkout.create("dropin").mount("#dropin-container");
-    }
-
-    initCheckout();
+    });
   </script>
 </body>
 </html>
