@@ -4,13 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>Adyen Apple Pay Web Drop-in</title>
-  <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
-    crossorigin="anonymous">
-  </script>
-  <link
-    rel="stylesheet"
-    href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.css"
-  />
+
+  <script
+  src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
+  defer
+  crossorigin="anonymous">
+</script>
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.css"
+/>
 </head>
 
 <body>
@@ -18,9 +21,11 @@
   <div id="dropin-container"></div>
 
   <script>
-    window.addEventListener("load", async function () {
-      if (typeof AdyenCheckout === "undefined") {
-        alert("Adyen SDK failed to load");
+    document.addEventListener("DOMContentLoaded", async () => {
+
+      if (!window.AdyenCheckout) {
+        console.error("Adyen SDK not available", window);
+        alert("Adyen SDK failed to load – check CSP / network");
         return;
       }
 
@@ -50,7 +55,7 @@
           if (response.action) {
             dropin.handleAction(response.action);
           } else {
-            alert("Result: " + response.resultCode);
+            alert(response.resultCode);
           }
         },
 
@@ -61,12 +66,13 @@
             body: JSON.stringify(state.data)
           }).then(r => r.json());
 
-          alert("Result: " + response.resultCode);
+          alert(response.resultCode);
         }
       });
 
       checkout.create("dropin").mount("#dropin-container");
     });
   </script>
+
 </body>
 </html>
