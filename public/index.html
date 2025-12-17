@@ -5,13 +5,13 @@
   <meta charset="UTF-8" />
   <title>Adyen Apple Pay Web Drop-in</title>
   <script
-    src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.66.0/adyen.js"
+    src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
     defer
     crossorigin="anonymous">
   </script>
 <link
   rel="stylesheet"
-  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.66.0/adyen.css"
+  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.css"
 />
 </head>
 
@@ -24,7 +24,7 @@
       const paymentMethodsResponse = await fetch("/api/paymentMethods")
         .then(r => r.json());
 
-      const checkout = new AdyenCheckout({
+      const checkout = await AdyenCheckout({
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
@@ -52,12 +52,10 @@
         }
       });
 
-      const dropin = new Dropin(checkout);
-      dropin.mount("#dropin-container");
+      checkout.create("dropin").mount("#dropin-container");
     }
 
     initCheckout();
   </script>
-
 </body>
 </html>
