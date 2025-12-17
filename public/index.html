@@ -15,7 +15,7 @@
   <div id="dropin-container"></div>
 
   <script type="module">
-    import AdyenCheckout from "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js";
+    import { AdyenCheckout } from "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js";
 
     async function initCheckout() {
       const paymentMethodsResponse = await fetch("/api/paymentMethods")
