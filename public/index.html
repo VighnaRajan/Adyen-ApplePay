@@ -6,7 +6,6 @@
   <title>Adyen Apple Pay Web Drop-in</title>
   <script
     src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.7.0/adyen.js"
-    defer
     crossorigin="anonymous">
   </script>
 <link
@@ -55,7 +54,7 @@
       checkout.create("dropin").mount("#dropin-container");
     }
 
-    window.addEventListener("load", initCheckout);
+    initCheckout();
   </script>
 </body>
 </html>
