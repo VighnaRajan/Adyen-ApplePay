@@ -1,18 +1,19 @@
 
-# Adyen Apple Pay Drop‑in (Adyen Certificate) – Render Ready
+# Adyen Apple Pay Drop-in – Node.js (Render Ready)
 
-This project uses **Adyen's Apple Pay certificate** (NOT your own Apple cert).
+Uses **Adyen-managed Apple Pay certificate**.
+No Apple Developer certificate required.
 
-## Environment Variables (Render)
-- ADYEN_API_KEY
-- ADYEN_MERCHANT_ACCOUNT
-- BASE_URL (https://your-render-app.onrender.com)
+## Render Settings
+Runtime: Node
+Build Command: npm install
+Start Command: npm start
 
-## Deploy on Render
-- Build Command: mvn clean package
-- Start Command: java -jar target/adyen-applepay-0.0.1-SNAPSHOT.jar
+## Environment Variables
+ADYEN_API_KEY=
+ADYEN_MERCHANT_ACCOUNT=
+BASE_URL=https://your-app.onrender.com
 
-## Apple Pay Notes
-- Apple Pay appears automatically on Safari when eligible.
-- Domain must be registered in Adyen Customer Area.
-- Uses Adyen-hosted merchant validation internally.
+## Notes
+- Apple Pay shows only on Safari / Apple Pay capable devices
+- Domain must be registered in Adyen Customer Area
