@@ -20,7 +20,7 @@
 
       const checkout = new AdyenCheckout({
         environment: "test",
-        clientKey: "test_2KQKSDJKZBB7ZMAP5DPIIHPPJQKSQLW5",
+        clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
         onSubmit: async (state, dropin) => {
           const response = await fetch("/api/payments", {
