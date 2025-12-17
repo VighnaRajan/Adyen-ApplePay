@@ -12,10 +12,11 @@ app.use(express.static("public"));
 const ADYEN_API_KEY = "AQExhmfxJoPMahdHw0m/n3Q5qf3VZ4VID5pGVFZZwGy8n3ROlODmr0IK7OpPHkNslr/xIBDBXVsNvuR83LVYjEgiTGAH-a91qhQnJHvwHAxTmzRPWRXx2sQp5VOejTyHEXwhyeHw=-i1i7kpk;.$ejPV_h<W9";
 const ADYEN_MERCHANT_ACCOUNT = "OnebillSoftwareECOM";
 const PORT = "3000";
-const ADYEN_CHECKOUT_URL = "https://checkout-test.adyen.com/v71";
 
-app.get("/api/paymentMethods", async (req, res) => {
-  const response = await fetch(`${ADYEN_CHECKOUT_URL}/paymentMethods`, {
+const CHECKOUT_BASE_URL = "https://checkout-test.adyen.com/v71";
+
+app.get("/api/paymentMethods", async (_, res) => {
+  const response = await fetch(`${CHECKOUT_BASE_URL}/paymentMethods`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,12 +26,11 @@ app.get("/api/paymentMethods", async (req, res) => {
       merchantAccount: ADYEN_MERCHANT_ACCOUNT
     })
   });
-
   res.json(await response.json());
 });
 
 app.post("/api/payments", async (req, res) => {
-  const response = await fetch(`${ADYEN_CHECKOUT_URL}/payments`, {
+  const response = await fetch(`${CHECKOUT_BASE_URL}/payments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -39,17 +39,19 @@ app.post("/api/payments", async (req, res) => {
     body: JSON.stringify({
       merchantAccount: ADYEN_MERCHANT_ACCOUNT,
       amount: { currency: "USD", value: 1000 },
-      reference: "APPLEPAY_WEB_TEST",
-      returnUrl: "https://example.com",
+      reference: "APPLEPAY_WEB_V6",
+      returnUrl: "https://example.com/return",
+      storePaymentMethod: true,
+      recurringProcessingModel: "CardOnFile",
+      shopperReference: "shopper_12345",
       ...req.body
     })
   });
-
   res.json(await response.json());
 });
 
 app.post("/api/payments/details", async (req, res) => {
-  const response = await fetch(`${ADYEN_CHECKOUT_URL}/payments/details`, {
+  const response = await fetch(`${CHECKOUT_BASE_URL}/payments/details`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -57,7 +59,6 @@ app.post("/api/payments/details", async (req, res) => {
     },
     body: JSON.stringify(req.body)
   });
-
   res.json(await response.json());
 });
 

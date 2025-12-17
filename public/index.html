@@ -11,16 +11,21 @@
   />
 </head>
 <body>
-  <h2>Apple Pay via Adyen Web Drop-in</h2>
+  <h2>Apple Pay via Adyen Web Drop-in (SDK v6)</h2>
   <div id="dropin-container"></div>
 
   <script>
     async function initCheckout() {
-      const paymentMethodsResponse = await fetch("/api/paymentMethods").then(r => r.json());
+      if (!window.ApplePaySession || !ApplePaySession.canMakePayments()) {
+        document.body.insertAdjacentHTML("beforeend",
+          "<p>Apple Pay not supported on this device/browser.</p>");
+        return;
+      }
 
-      console.log("paymentMethodsResponse", paymentMethodsResponse);
+      const paymentMethodsResponse =
+        await fetch("/api/paymentMethods").then(r => r.json());
 
-      const checkout = new AdyenCheckout({
+      const checkout = await AdyenCheckout({
         environment: "test",
         clientKey: "test_M74U6WEX3ZEXPJKLAQHBMGXFFQZINJKT",
         paymentMethodsResponse,
@@ -34,7 +39,7 @@
           if (response.action) {
             dropin.handleAction(response.action);
           } else {
-            alert("Payment result: " + response.resultCode);
+            alert("Result: " + response.resultCode);
           }
         },
         onAdditionalDetails: async (state, dropin) => {
@@ -44,7 +49,7 @@
             body: JSON.stringify(state.data)
           }).then(r => r.json());
 
-          alert("Payment result: " + response.resultCode);
+          alert("Result: " + response.resultCode);
         }
       });
 

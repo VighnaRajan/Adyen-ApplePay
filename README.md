@@ -1,25 +1,23 @@
 
-# Adyen + Apple Pay (Web Drop-in) – Render Ready
+# Adyen + Apple Pay Web Drop-in (SDK v6)
 
-## Prerequisites
-- Adyen account
-- Apple Pay enabled in Adyen using Adyen-provided Apple Pay certificate
-- Apple Pay domain verified in Adyen
-- Node.js 18+
+## Features
+- Adyen Web SDK v6
+- Apple Pay rendering validation
+- Recurring token (Card-on-File) support
+- Render.com ready
 
-## Environment Variables (Render)
+## Environment Variables
 - ADYEN_API_KEY
 - ADYEN_MERCHANT_ACCOUNT
-- ADYEN_ENVIRONMENT=test|live
+- ADYEN_ENVIRONMENT=test|LIVE
 - PORT=3000
 
 ## Notes
-- Replace `clientKey` in `public/index.html`
-- Use HTTPS in production (Render provides this automatically)
-- Apple Pay will only appear on supported devices/browsers
+- Replace clientKey in index.html
+- Apple Pay must be enabled & domain verified in Adyen
+- HTTPS is mandatory (Render provides it)
 
-## Run locally
-```
+## Run
 npm install
 npm start
-```

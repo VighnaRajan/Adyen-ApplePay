@@ -1,14 +1,15 @@
+
 {
-  "name": "adyen-applepay-web-dropin",
-  "version": "1.0.0",
+  "name": "adyen-applepay-web-dropin-v6",
+  "version": "2.0.0",
   "private": true,
-  "description": "Adyen Apple Pay Web Drop-in sample (Render-ready)",
+  "type": "module",
+  "description": "Adyen Apple Pay Web Drop-in SDK v6 with validation & recurring support (Render-ready)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "@adyen/api-library": "^16.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "node-fetch": "^3.3.2"
