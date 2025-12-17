@@ -21,7 +21,8 @@
 
   <script>
     async function initCheckout() {
-      const paymentMethodsResponse = await fetch("/api/paymentMethods").then(r => r.json());
+      const paymentMethodsResponse = await fetch("/api/paymentMethods")
+        .then(r => r.json());
 
       const checkout = new AdyenCheckout({
         environment: "test",
@@ -37,7 +38,7 @@
           if (response.action) {
             dropin.handleAction(response.action);
           } else {
-            alert("Result: " + response.resultCode);
+            console.log("Result:", response.resultCode);
           }
         },
         onAdditionalDetails: async (state, dropin) => {
@@ -47,11 +48,11 @@
             body: JSON.stringify(state.data)
           }).then(r => r.json());
 
-          alert("Result: " + response.resultCode);
+          console.log("Result:", response.resultCode);
         }
       });
 
-      const dropin = checkout.createDropin();
+      const dropin = new Dropin(checkout);
       dropin.mount("#dropin-container");
     }
 
