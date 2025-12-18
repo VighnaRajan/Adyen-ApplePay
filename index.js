@@ -31,11 +31,6 @@ const APPLE_PAY_MERCHANT_ID = "merchant.com.onebill.payment1";
 const APPLE_PAY_CERT_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.key";
 const APPLE_PAY_KEY_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.pem";
 
-const certRaw = fs.readFileSync(APPLE_PAY_CERT_PATH);
-    console.log(certRaw.slice(0, 30).toString());
-    console.log(fs.existsSync(APPLE_PAY_CERT_PATH));
-    console.log(fs.existsSync(APPLE_PAY_KEY_PATH));
-
 app.post('/api/applepay/validate-merchant', async (req, res) => {
   try {
     const { validationURL, domainName, displayName } = req.body;
@@ -55,22 +50,28 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
+    const cert = fs.readFileSync(APPLE_PAY_CERT_PATH, "utf8").replace(/^\uFEFF/, '');
+    const key  = fs.readFileSync(APPLE_PAY_KEY_PATH, "utf8").replace(/^\uFEFF/, '');
 
-    console.log(payload);
-    console.log(validationURL);
+    console.log("CERT START:", JSON.stringify(cert.slice(0, 40)));
+    console.log("KEY START:", JSON.stringify(key.slice(0, 40)));
 
-
-
-
+    const agent = new https.Agent({
+      cert,
+      key
+    });
     const requestOptions = {
       method: 'POST',
       hostname: 'apple-pay-gateway.apple.com',
-      cert: fs.readFileSync(APPLE_PAY_CERT_PATH, "utf8"),
-      key: fs.readFileSync(APPLE_PAY_KEY_PATH, "utf8"),
+      path: "/paymentservices/startSession",
+      agent,
       headers: {
         'Content-Type': 'application/json'
       }
     };
+
+    console.log("requestOptions", requestOptions);
+    
 
     const appleReq = https.request(validationURL, requestOptions, appleRes => {
       let data = '';
