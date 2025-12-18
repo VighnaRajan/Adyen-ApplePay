@@ -64,8 +64,8 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
 
     const requestOptions = {
       method: 'POST',
-      cert: fs.readFileSync(APPLE_PAY_CERT_PATH),
-      key: fs.readFileSync(APPLE_PAY_KEY_PATH),
+      cert: fs.readFileSync(APPLE_PAY_CERT_PATH, "utf8"),
+      key: fs.readFileSync(APPLE_PAY_KEY_PATH, "utf8"),
       headers: {
         'Content-Type': 'application/json'
       }
