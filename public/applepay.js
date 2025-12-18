@@ -22,24 +22,24 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
 
     const session = new ApplePaySession(3, paymentRequest);
 
-    // session.onvalidatemerchant = async (event) => {
-    //   await log('onvalidatemerchant triggered. Requesting merchant session from backend...');
-    //   const origin = window.location.origin;
-    //   const resp = await fetch('/api/adyen/applepay/sessions', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ origin, domainName: window.location.hostname, displayName: 'Demo Store', amount: { currency: 'EUR', value: 1000 }})
-    //   });
-    //   if (!resp.ok) {
-    //     const txt = await resp.text();
-    //     await log('Failed to get merchant session: ' + txt);
-    //     session.abort();
-    //     return;
-    //   }
-    //   const sessionData = await resp.json();
-    //   await log('Received merchant session. Completing merchant validation.');
-    //   session.completeMerchantValidation(sessionData);
-    // };
+    session.onvalidatemerchant = async (event) => {
+      await log('onvalidatemerchant triggered. Requesting merchant session from backend...');
+      const origin = window.location.origin;
+      const resp = await fetch('/api/adyen/applepay/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ origin, domainName: window.location.hostname, displayName: 'Demo Store', amount: { currency: 'EUR', value: 1000 }})
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        await log('Failed to get merchant session: ' + txt);
+        session.abort();
+        return;
+      }
+      const sessionData = await resp.json();
+      await log('Received merchant session. Completing merchant validation.');
+      session.completeMerchantValidation(sessionData);
+    };
 
     session.onpaymentauthorized = async (event) => {
       await log('Payment authorized by device. Sending token to backend...');
