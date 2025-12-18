@@ -75,11 +75,11 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
-    console.log("payload", payload);
-    console.log("validationURL", validationURL);
+    await log("payload", payload);
+    await log("validationURL", validationURL);
 
-    console.log('CERT EXISTS:', fs.existsSync(APPLE_PAY_CERT_PATH));
-    console.log('KEY EXISTS:', fs.existsSync(APPLE_PAY_KEY_PATH));
+    await log('CERT EXISTS:', fs.existsSync(APPLE_PAY_CERT_PATH));
+    await log('KEY EXISTS:', fs.existsSync(APPLE_PAY_KEY_PATH));
 
 
     const requestOptions = {
@@ -107,17 +107,17 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       }
     });
 
-    console.log("responded", responded);
+    await log("responded", responded);
 
     appleReq.write(payload);
     appleReq.end();
   } catch (err) {
-    console.console.error(err);
+    console.error(JSON.stringify(err));
     res.status(500).json({
-    error: 'Internal error',
-    message: err.message,
-    stack: err.stack
-  });
+      error: 'Internal error',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
