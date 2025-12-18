@@ -55,7 +55,7 @@ app.post('/api/adyen/applepay/sessions', async (req, res) => {
   const payload = {
     domainName: domainName || new URL(origin || 'https://example.com').hostname,
     displayName: displayName || 'Demo Store',
-    merchantIdentifier: "merchant.com.onebill.payment",
+    merchantIdentifier: "merchant.com.onebill.payment1",
   };
 
   try {
@@ -69,10 +69,14 @@ app.post('/api/adyen/applepay/sessions', async (req, res) => {
     });
     if (!resp.ok) {
       const txt = await resp.text();
+      console.log("errResp", txt);
+      
       console.error('Adyen sessions error', resp.status, txt);
       return res.status(resp.status).send({ error: txt });
     }
     const json = await resp.json();
+    console.log("jsonresp", json);
+    
     return res.json(json);
   } catch (err) {
     console.error('applepay/sessions err', err);
