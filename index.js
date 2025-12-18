@@ -62,7 +62,7 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
     if (!validationURL) {
       return res.status(400).json({ error: 'validationURL is required' });
     }
-
+    await log("validationURL", validationURL);
     if (!validationURL.startsWith('https://apple-pay-gateway.apple.com')) {
       throw new Error('Invalid Apple validation URL');
     }
