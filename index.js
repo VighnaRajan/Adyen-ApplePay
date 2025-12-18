@@ -92,14 +92,15 @@ app.post('/api/adyen/payments', async (req, res) => {
   if (!ADYEN_API_KEY) return res.status(500).json({ error: 'ADYEN_API_KEY not configured' });
   const { paymentData, amount } = req.body || {};
   if (!paymentData) return res.status(400).json({ error: 'paymentData required' });
-
+  console.log("paymentData: ", paymentData);
+  
   // Adyen expects applePayToken as base64 encoded JSON
   const applePayTokenBase64 = Buffer.from(JSON.stringify(paymentData)).toString('base64');
+  console.log("applePayTokenBase64: ", applePayTokenBase64);
 
   const payload = {
     amount: amount || { currency: 'EUR', value: 1000 },
-    paymentMethod: { type: 'applepay' },
-    applePayToken: applePayTokenBase64,
+    paymentMethod: { type: 'applepay', applePayToken: applePayTokenBase64 },
     reference: `ORDER-${Date.now()}`,
     merchantAccount: ADYEN_MERCHANT_ACCOUNT
   };
