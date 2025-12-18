@@ -24,21 +24,26 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
 
     session.onvalidatemerchant = async (event) => {
       await log('onvalidatemerchant triggered. Requesting merchant session from backend...');
-      const origin = window.location.origin;
-      const resp = await fetch('/api/adyen/applepay/sessions', {
+      const resp = await fetch('/api/applepay/validate-merchant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, domainName: window.location.hostname, displayName: 'OneBill Store', amount: { currency: 'EUR', value: 1000 }})
+        body: JSON.stringify({
+          validationURL: event.validationURL,
+          domainName: window.location.hostname,
+          displayName: 'OneBill Store'
+        })
       });
+
       if (!resp.ok) {
         const txt = await resp.text();
         await log('Failed to get merchant session: ' + txt);
         session.abort();
         return;
       }
-      const sessionData = await resp.json();
+
+      const merchantSession = await resp.json();
       await log('Received merchant session. Completing merchant validation.');
-      session.completeMerchantValidation(sessionData);
+      session.completeMerchantValidation(merchantSession);
     };
 
     session.onpaymentauthorized = async (event) => {

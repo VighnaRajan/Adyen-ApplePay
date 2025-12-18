@@ -48,47 +48,60 @@ app.use('/.well-known/apple-developer-merchantid-domain-association', (req, res,
 });
 
 
-// Request an Apple merchant session from Adyen (Adyen-managed certificate)
-app.post('/api/adyen/applepay/sessions', async (req, res) => {
-  if (!ADYEN_API_KEY) return res.status(500).json({ error: 'ADYEN_API_KEY not configured' });
-  console.log("ADYEN_API_KEY", ADYEN_API_KEY);
-  
-  const { origin, domainName, displayName, amount } = req.body || {};
-  const payload = {
-    domainName: domainName || new URL(origin || 'https://example.com').hostname,
-    displayName: displayName || 'Demo Store',
-    merchantIdentifier: "merchant.com.onebill.payment1",
-  };
-  console.log("payload", payload);
-  
+const https = require('https');
+const fs = require('fs');
 
+const APPLE_PAY_MERCHANT_ID = "merchant.com.onebill.payment1";
+const APPLE_PAY_CERT_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.key";
+const APPLE_PAY_KEY_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.pem";
+
+app.post('/api/applepay/validate-merchant', async (req, res) => {
   try {
-    const resp = await fetch(`${ADYEN_CHECKOUT_BASE}/applePay/sessions`, {
-      method: 'POST',
-      headers: {
-        'x-api-key': ADYEN_API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-    console.log("resp", resp);
-    
-    if (!resp.ok) {
-      const txt = await resp.text();
-      console.log("errResp", txt);
-      
-      console.error('Adyen sessions error', resp.status, txt);
-      return res.status(resp.status).send({ error: txt });
+    const { validationURL, domainName, displayName } = req.body;
+
+    if (!validationURL) {
+      return res.status(400).json({ error: 'validationURL is required' });
     }
-    const json = await resp.json();
-    console.log("jsonresp", json);
-    
-    return res.json(json);
+
+    const payload = JSON.stringify({
+      merchantIdentifier: APPLE_PAY_MERCHANT_ID,
+      domainName,
+      displayName: displayName || 'OneBill Store',
+      initiative: 'web',
+      initiativeContext: domainName
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      cert: fs.readFileSync(APPLE_PAY_CERT_PATH),
+      key: fs.readFileSync(APPLE_PAY_KEY_PATH),
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    };
+
+    const appleReq = https.request(validationURL, requestOptions, appleRes => {
+      let data = '';
+      appleRes.on('data', chunk => (data += chunk));
+      appleRes.on('end', () => {
+        res.status(appleRes.statusCode).send(data);
+      });
+    });
+
+    appleReq.on('error', err => {
+      console.error('Apple Pay validation error:', err);
+      res.status(500).json({ error: 'Apple Pay validation failed' });
+    });
+
+    appleReq.write(payload);
+    appleReq.end();
   } catch (err) {
-    console.error('applepay/sessions err', err);
-    return res.status(500).json({ error: 'internal' });
+    console.error(err);
+    res.status(500).json({ error: 'Internal error' });
   }
 });
+
 
 app.get(
   '/.well-known/apple-developer-merchantid-domain-association',
