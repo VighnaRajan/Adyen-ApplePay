@@ -63,6 +63,10 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       return res.status(400).json({ error: 'validationURL is required' });
     }
 
+    if (!validationURL.startsWith('https://apple-pay-gateway.apple.com')) {
+      throw new Error('Invalid Apple validation URL');
+    }
+
     const payload = JSON.stringify({
       merchantIdentifier: APPLE_PAY_MERCHANT_ID,
       domainName,
@@ -71,15 +75,21 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
+    console.log("payload", payload);
+    console.log("validationURL", validationURL);
+
+    console.log('CERT EXISTS:', fs.existsSync(APPLE_PAY_CERT_PATH));
+    console.log('KEY EXISTS:', fs.existsSync(APPLE_PAY_KEY_PATH));
+
+
     const requestOptions = {
       method: 'POST',
       cert: fs.readFileSync(APPLE_PAY_CERT_PATH),
       key: fs.readFileSync(APPLE_PAY_KEY_PATH),
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload)
+        'Content-Type': 'application/json'
       }
-    };
+    };    
 
     const appleReq = https.request(validationURL, requestOptions, appleRes => {
       let data = '';
@@ -89,16 +99,25 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       });
     });
 
+    let responded = false;
     appleReq.on('error', err => {
-      console.error('Apple Pay validation error:', err);
-      res.status(500).json({ error: 'Apple Pay validation failed' });
+      if (!responded) {
+        responded = true;
+        res.status(500).json({ error: err.message });
+      }
     });
+
+    console.log("responded", responded);
 
     appleReq.write(payload);
     appleReq.end();
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal error' });
+    console.console.error(err);
+    res.status(500).json({
+    error: 'Internal error',
+    message: err.message,
+    stack: err.stack
+  });
   }
 });
 
