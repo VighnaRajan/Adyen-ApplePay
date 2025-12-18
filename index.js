@@ -64,12 +64,13 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
 
     const requestOptions = {
       method: 'POST',
+      hostname: 'apple-pay-gateway.apple.com',
       cert: fs.readFileSync(APPLE_PAY_CERT_PATH, "utf8"),
       key: fs.readFileSync(APPLE_PAY_KEY_PATH, "utf8"),
       headers: {
         'Content-Type': 'application/json'
       }
-    };    
+    };
 
     const appleReq = https.request(validationURL, requestOptions, appleRes => {
       let data = '';
@@ -78,16 +79,6 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
         res.status(appleRes.statusCode).send(data);
       });
     });
-
-    let responded = false;
-    appleReq.on('error', err => {
-      if (!responded) {
-        responded = true;
-        res.status(500).json({ error: err.message });
-      }
-    });
-
-    console.log(responded);
 
     appleReq.write(payload);
     appleReq.end();
