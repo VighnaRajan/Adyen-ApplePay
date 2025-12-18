@@ -24,30 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Health
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-// ---- Apple Pay domain verification audit filter ----
-app.use('/.well-known/apple-developer-merchantid-domain-association', (req, res, next) => {
-  console.log('=== Apple Pay Domain Verification Request ===');
-  console.log('Timestamp:', new Date().toISOString());
-  console.log('Method:', req.method);
-  console.log('Host:', req.headers.host);
-  console.log('IP:', req.ip);
-
-  console.log('Headers:', {
-    'user-agent': req.headers['user-agent'],
-    'accept': req.headers['accept'],
-    'accept-encoding': req.headers['accept-encoding'],
-    'connection': req.headers['connection']
-  });
-
-  console.log('Query params:', req.query);
-  console.log('Body:', req.body);
-
-  console.log('============================================');
-
-  next(); // IMPORTANT: allow request to continue
-});
-
-
 const https = require('https');
 const fs = require('fs');
 
@@ -74,11 +50,11 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
-    console.log("payload: "+ payload);
-    console.log("validationURL: "+ validationURL);
+    console.log(payload);
+    console.log(validationURL);
 
-    console.log('CERT EXISTS: '+ fs.existsSync(APPLE_PAY_CERT_PATH));
-    console.log('KEY EXISTS: '+ fs.existsSync(APPLE_PAY_KEY_PATH));
+    console.log(fs.existsSync(APPLE_PAY_CERT_PATH));
+    console.log(fs.existsSync(APPLE_PAY_KEY_PATH));
 
 
     const requestOptions = {
@@ -106,7 +82,7 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       }
     });
 
-    console.log("responded: " + responded);
+    console.log(responded);
 
     appleReq.write(payload);
     appleReq.end();
@@ -119,22 +95,6 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
     });
   }
 });
-
-
-app.get(
-  '/.well-known/apple-developer-merchantid-domain-association',
-  (req, res) => {
-    res.sendFile(
-      path.join(
-        __dirname,
-        'public',
-        '.well-known',
-        'apple-developer-merchantid-domain-association'
-      )
-    );
-  }
-);
-
 
 // Send Apple Pay token to Adyen /payments (sandbox)
 app.post('/api/adyen/payments', async (req, res) => {
