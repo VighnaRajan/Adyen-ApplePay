@@ -31,6 +31,11 @@ const APPLE_PAY_MERCHANT_ID = "merchant.com.onebill.payment1";
 const APPLE_PAY_CERT_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.key";
 const APPLE_PAY_KEY_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.pem";
 
+const certRaw = fs.readFileSync(APPLE_PAY_CERT_PATH);
+    console.log(certRaw.slice(0, 30).toString());
+    console.log(fs.existsSync(APPLE_PAY_CERT_PATH));
+    console.log(fs.existsSync(APPLE_PAY_KEY_PATH));
+
 app.post('/api/applepay/validate-merchant', async (req, res) => {
   try {
     const { validationURL, domainName, displayName } = req.body;
@@ -50,11 +55,11 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
+
     console.log(payload);
     console.log(validationURL);
 
-    console.log(fs.existsSync(APPLE_PAY_CERT_PATH));
-    console.log(fs.existsSync(APPLE_PAY_KEY_PATH));
+
 
 
     const requestOptions = {
