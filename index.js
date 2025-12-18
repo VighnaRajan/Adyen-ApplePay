@@ -28,8 +28,8 @@ const https = require('https');
 const fs = require('fs');
 
 const APPLE_PAY_MERCHANT_ID = "merchant.com.onebill.payment1";
-const APPLE_PAY_CERT_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.key";
-const APPLE_PAY_KEY_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.pem";
+const APPLE_PAY_KEY_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.key";
+const APPLE_PAY_CERT_PATH = "/etc/secrets/merchant_com_onebill_payment1_merchant_id.pem";
 
 app.post('/api/applepay/validate-merchant', async (req, res) => {
   try {
@@ -53,9 +53,6 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
     const cert = fs.readFileSync(APPLE_PAY_CERT_PATH, "utf8").replace(/^\uFEFF/, '');
     const key  = fs.readFileSync(APPLE_PAY_KEY_PATH, "utf8").replace(/^\uFEFF/, '');
 
-    console.log("CERT START:", JSON.stringify(cert.slice(0, 40)));
-    console.log("KEY START:", JSON.stringify(key.slice(0, 40)));
-
     const agent = new https.Agent({
       cert,
       key
@@ -69,9 +66,6 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
         'Content-Type': 'application/json'
       }
     };
-
-    console.log("requestOptions", requestOptions);
-    
 
     const appleReq = https.request(validationURL, requestOptions, appleRes => {
       let data = '';
