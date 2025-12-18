@@ -28,7 +28,7 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
       const resp = await fetch('/api/adyen/applepay/sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, domainName: window.location.hostname, displayName: 'Demo Store', amount: { currency: 'EUR', value: 1000 }})
+        body: JSON.stringify({ origin, domainName: window.location.hostname, displayName: 'OneBill Store', amount: { currency: 'EUR', value: 1000 }})
       });
       if (!resp.ok) {
         const txt = await resp.text();
