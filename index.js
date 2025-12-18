@@ -62,8 +62,7 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
     if (!validationURL) {
       return res.status(400).json({ error: 'validationURL is required' });
     }
-    await log("validationURL", validationURL);
-    if (!validationURL.startsWith('https://apple-pay-gateway.apple.com')) {
+    if (!validationURL.startsWith('https://apple-pay-gateway-cert.apple.com')) {
       throw new Error('Invalid Apple validation URL');
     }
 
@@ -75,11 +74,11 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       initiativeContext: domainName
     });
 
-    await log("payload", payload);
-    await log("validationURL", validationURL);
+    console.log("payload: "+ payload);
+    console.log("validationURL: "+ validationURL);
 
-    await log('CERT EXISTS:', fs.existsSync(APPLE_PAY_CERT_PATH));
-    await log('KEY EXISTS:', fs.existsSync(APPLE_PAY_KEY_PATH));
+    console.log('CERT EXISTS: '+ fs.existsSync(APPLE_PAY_CERT_PATH));
+    console.log('KEY EXISTS: '+ fs.existsSync(APPLE_PAY_KEY_PATH));
 
 
     const requestOptions = {
@@ -107,7 +106,7 @@ app.post('/api/applepay/validate-merchant', async (req, res) => {
       }
     });
 
-    await log("responded", responded);
+    console.log("responded: " + responded);
 
     appleReq.write(payload);
     appleReq.end();
