@@ -24,7 +24,7 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
 
     session.onvalidatemerchant = async (event) => {
       await log('onvalidatemerchant triggered. Requesting merchant session from backend...');
-      await log("event", JSON.stringify(event));
+      console.log(event);
       const resp = await fetch('/api/applepay/validate-merchant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
