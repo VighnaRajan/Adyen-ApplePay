@@ -51,12 +51,16 @@ app.use('/.well-known/apple-developer-merchantid-domain-association', (req, res,
 // Request an Apple merchant session from Adyen (Adyen-managed certificate)
 app.post('/api/adyen/applepay/sessions', async (req, res) => {
   if (!ADYEN_API_KEY) return res.status(500).json({ error: 'ADYEN_API_KEY not configured' });
+  console.log("ADYEN_API_KEY", ADYEN_API_KEY);
+  
   const { origin, domainName, displayName, amount } = req.body || {};
   const payload = {
     domainName: domainName || new URL(origin || 'https://example.com').hostname,
     displayName: displayName || 'Demo Store',
     merchantIdentifier: "merchant.com.onebill.payment1",
   };
+  console.log("payload", payload);
+  
 
   try {
     const resp = await fetch(`${ADYEN_CHECKOUT_BASE}/applePay/sessions`, {
@@ -67,6 +71,8 @@ app.post('/api/adyen/applepay/sessions', async (req, res) => {
       },
       body: JSON.stringify(payload)
     });
+    console.log("resp", resp);
+    
     if (!resp.ok) {
       const txt = await resp.text();
       console.log("errResp", txt);
