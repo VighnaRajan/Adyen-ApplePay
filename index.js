@@ -102,7 +102,8 @@ app.post('/api/adyen/payments', async (req, res) => {
     amount: amount || { currency: 'EUR', value: 0 },
     paymentMethod: { type: 'applepay', applePayToken: applePayTokenBase64 },
     reference: `ORDER-${Date.now()}`,
-    merchantAccount: ADYEN_MERCHANT_ACCOUNT
+    merchantAccount: ADYEN_MERCHANT_ACCOUNT,
+    recurringProcessingModel: 'CardOnFile'
   };
 
   try {
