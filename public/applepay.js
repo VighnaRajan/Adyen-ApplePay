@@ -15,7 +15,7 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
     const paymentRequest = {
       countryCode: 'US',
       currencyCode: 'EUR',
-      total: { label: 'Demo Store', amount: '0.00' },
+      total: { label: 'Demo Store', amount: '1.00' },
       supportedNetworks: ['visa', 'masterCard', 'amex'],
       merchantCapabilities: ['supports3DS']
     };
