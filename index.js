@@ -99,7 +99,7 @@ app.post('/api/adyen/payments', async (req, res) => {
   console.log("applePayTokenBase64: ", applePayTokenBase64);
 
   const payload = {
-    amount: amount || { currency: 'EUR', value: 1 },
+    amount: amount || { currency: 'EUR', value: 10.00 },
     paymentMethod: { type: 'applepay', applePayToken: applePayTokenBase64 },
     reference: `ORDER-${Date.now()}`,
     merchantAccount: ADYEN_MERCHANT_ACCOUNT,
