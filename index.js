@@ -106,6 +106,7 @@ app.post('/api/adyen/payments', async (req, res) => {
     recurringProcessingModel: 'UnscheduledCardOnFile',
     shopperInteraction: 'Ecommerce',
     storePaymentMethod: 'true',
+    shopperReference: 'KVR'
   };
 
   try {
