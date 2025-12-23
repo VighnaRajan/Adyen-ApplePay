@@ -15,7 +15,7 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
     const paymentRequest = {
       countryCode: 'US',
       currencyCode: 'EUR',
-      total: { label: 'Demo Store', amount: '1.00' },
+      total: { label: 'Demo Store', amount: '0' },
       supportedNetworks: ['visa', 'masterCard', 'amex'],
       merchantCapabilities: ['supports3DS']
     };
@@ -55,7 +55,7 @@ document.getElementById('apple-pay-btn').addEventListener('click', async () => {
       const resp = await fetch('/api/adyen/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentData, amount: { currency: 'EUR', value: 100 } })
+        body: JSON.stringify({ paymentData, amount: { currency: 'EUR', value: 0 } })
       });
       const result = await resp.json();
       await log('Adyen response: ' + JSON.stringify(result));
